@@ -4,7 +4,7 @@
   "description": "practice fetch requests, using an API, responding to user events, updating the dom",
   "main": "index.js",
   "scripts": {
-    "test": "vitest --run --environment happy-dom"
+    "test": "vitest --run --bail 1 --environment happy-dom"
   },
   "repository": {
     "type": "git",
@@ -26,7 +26,9 @@
   "homepage": "https://github.com/learn-co-curriculum/phase-1-mock-cc-ramen-rater#readme",
   "dependencies": {
     "@testing-library/dom": "^9.3.4",
+    "express": "^4.21.1",
     "happy-dom": "^13.2.1",
+    "json-server": "^1.0.0-beta.3",
     "vitest": "^1.2.1"
   }
 }
