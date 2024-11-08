@@ -1,5 +1,5 @@
 const ramensURL = `http://localhost:3000/ramens`;
-////////// DOM SELECTORS
+
 const displayRamens = document.querySelector("#ramen-menu");
 const detailImage = document.querySelector("#ramen-detail");
 const ramenId = document.querySelector("#new-ramen");
@@ -9,14 +9,12 @@ const ramenImg = document.querySelector("#new-image");
 const restaurantRating = document.querySelector("#new-rating");
 const ramCom = document.querySelector("#new-comment");
 
-/////////// FETCHES fnc
-function getAllRamens() {
+function getAllRamens(ramensURL) {
   return fetch(ramensURL).then((res) => res.json());
 }
 function displayRamen(ramensArr) {
   ramensArr.forAll(renderInNav);
 }
-////////// RENDER fnc
 
 function renderRamens(ramensArr) {
   ramensArr.forEach(renderInNav);
@@ -32,7 +30,6 @@ function renderImage(ramenObj) {
   ramenName.src = ramenObj.new - name;
   restaurantName.src = ramenObj.new - restaurant;
 }
-///////// EVENT LISTENERS/HANDLERS
 
 function handleClick() {
   src = "./assets/ramens.jpg";
@@ -41,12 +38,14 @@ function handleClick() {
   console.log("Photo clicked!");
 }
 
-///////// INITIALIZERS
-getAllRamens(ramensURL).then((ramensArr) => {
-  renderDetail(0);
-  renderRamens(ramensArr);
-});
+getAllRamens(ramensURL).then((ramensArr) => renderRamens(ramensArr));
 
+////////// GLOBAL
+////////// DOM SELECTORS
+/////////// FETCHES fnc
+////////// RENDER fnc
+///////// EVENT LISTENERS/HANDLERS
+///////// INITIALIZERS
 /*
     {
       "id": 1,
