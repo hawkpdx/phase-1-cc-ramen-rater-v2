@@ -1,90 +1,77 @@
-const ramensURL = `http://localhost:3000/ramens`;
+// GLOBAL
+const BASE_URL = 'http://localhost:3000';
 
-const displayRamens = document.querySelector("#ramen-menu");
-const detailImage = document.querySelector("#ramen-detail");
-const ramenId = document.querySelector("#new-ramen");
-const ramenName = document.querySelector("#new-name");
-const restaurantName = document.querySelector("#new-restaurant");
-const ramenImg = document.querySelector("#new-image");
-const restaurantRating = document.querySelector("#new-rating");
-const ramCom = document.querySelector("#new-comment");
+// DOM EVENTS
+const handleClick = (ramen) => {
+  const ramenDetail = document.getElementById('ramen-detail');
+  ramenDetail.innerHTML = `
+    <img class="detail-image" src="${ramen.image}" alt="${ramen.name}" />
+    <h2 class="name">${ramen.name}</h2>
+    <h3 class="restaurant">${ramen.restaurant}</h3>
+  `;
+  const ratingDisplay = document.getElementById('rating-display');
+  ratingDisplay.textContent = ramen.rating;
+  const commentDisplay = document.getElementById('comment-display');
+  commentDisplay.textContent = ramen.comment;
+};
 
-function getAllRamens(ramensURL) {
-  return fetch(ramensURL).then((res) => res.json());
-}
-function displayRamen(ramensArr) {
-  ramensArr.forAll(renderInNav);
-}
+const addSubmitListener = () => {
+  const form = document.getElementById('new-ramen');
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const name = document.getElementById('new-name').value;
+    const restaurant = document.getElementById('new-restaurant').value;
+    const image = document.getElementById('new-image').value;
+    let rating = parseInt(document.getElementById('new-rating').value);
+    const comment = document.getElementById('new-comment').value;
 
-function renderRamens(ramensArr) {
-  ramensArr.forEach(renderInNav);
-}
-function renderInNav(ramenObj) {
-  const img = document.createElement("img");
-  img.src = ramenObj.image;
-  displayRamens.append(img);
-}
-function renderImage(ramenObj) {
-  detailImage.src = ramenObj.new - detail;
-  ramenId.src = ramenObj.new - id;
-  ramenName.src = ramenObj.new - name;
-  restaurantName.src = ramenObj.new - restaurant;
-}
+    // ADD RATING
+    if (rating < 0 || rating > 10 || isNaN(rating)) {
+      alert('Please enter a valid rating between 0 and 10.');
+      return;
+    }
 
-function handleClick() {
-  src = "./assets/ramens.jpg";
-  alt = "Description";
-  onclick = "handleClick()";
-  console.log("Photo clicked!");
-}
+    const newRamen = { name, restaurant, image, rating, comment };
 
-getAllRamens(ramensURL).then((ramensArr) => renderRamens(ramensArr));
+    
+    const ramenMenu = document.getElementById('ramen-menu');
+    const img = document.createElement('img');
+    img.src = newRamen.image;
+    img.alt = newRamen.name;
+    img.addEventListener('click', () => handleClick(newRamen));
+    ramenMenu.appendChild(img);
 
-////////// GLOBAL
-////////// DOM SELECTORS
-/////////// FETCHES fnc
-////////// RENDER fnc
-///////// EVENT LISTENERS/HANDLERS
-///////// INITIALIZERS
-/*
-    {
-      "id": 1,
-      "name": "Shoyu Ramen",
-      "restaurant": "Nonono",
-      "image": "./assets/ramen/shoyu.jpg",
-      "rating": 7,
-      "comment": "Delish. Can't go wrong with a classic!"
-    },
-    {
-      "id": 2,
-      "name": "Naruto Ramen",
-      "restaurant": "Naruto",
-      "image": "./assets/ramen/naruto.jpg",
-      "rating": 10,
-      "comment": "My absolute fave!"
-    },
-    {
-      "id": 3,
-      "name": "Nirvana Shiromaru",
-      "restaurant": "Ippudo",
-      "image": "./assets/ramen/nirvana.jpg",
-      "rating": "7",
-      "comment": "Do buy the hype."
-    },
-    {
-      "id": 4,
-      "name": "Gyukotsu Ramen",
-      "restaurant": "Za-Ya Ramen",
-      "image": "./assets/ramen/gyukotsu.jpg",
-      "rating": 8,
-      "comment": "Good to the last drop."
-    },
-    {
-      "id": 5,
-      "name": "Kojiro Red Ramen",
-      "restaurant": "Ramen-Ya",
-      "image": "./assets/ramen/kojiro.jpg",
-      "rating": 6,
-      "comment": "Perfect for a cold night."
-  }
-      */
+
+    form.reset();
+
+   
+    await fetch(`${BASE_URL}/ramens`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(newRamen),
+    });
+  });
+};
+
+const displayRamens = async () => {
+  const response = await fetch(`${BASE_URL}/ramens`);
+  const ramens = await response.json();
+  const ramenMenu = document.getElementById('ramen-menu');
+  ramenMenu.innerHTML = '';
+  ramens.forEach((ramen) => {
+    const img = document.createElement('img');
+    img.src = ramen.image;
+    img.alt = ramen.name;
+    img.addEventListener('click', () => handleClick(ramen));
+    ramenMenu.appendChild(img);
+  });
+};
+// INITIALIZERS
+const main = () => {
+  displayRamens();
+  addSubmitListener();
+};
+
+document.addEventListener('DOMContentLoaded', main);
